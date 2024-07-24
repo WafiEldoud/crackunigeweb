@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .big-image-container {
+            max-width: 30%; /* Limit the big image width */
+            margin-right: 4px; /* Margin between big image and patches */
+            margin-top: 5px;
+        }
+
+        .big-image {
+            max-width: 100%; /* Ensure big image fits container */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Ensure image is block level */
+        }
+
+        .patches-container {
+            width: 120%; /* Ensure the container takes up the full width */
+        }
+
+        .patches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px; /* Adjust gap between patch images */
+            justify-content: flex-start; /* Start patches from the left */
+            margin-top: 5px;
+        }
+
+        .patch-image {
+            width: 10%; /* Calculate width for patches per row, subtracting total gaps */
+            height: auto; /* Maintain aspect ratio */
+        }
+
+        .major {
+            font-size: 1em;
+            margin-bottom: 20px;
+            text-align: center; /* Center align text */
+        }
+        .major2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center; /* Center align text */
+        }
+
+        .plot-image {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        .home-link {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .home-link a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .home-link a:hover {
+            background-color: #0056b3;
+        }
+
+        .reconstructed-image-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .reconstructed-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="home-link">
+        <a href="/">Home</a>
+    </div>
+    
+    <article id="about">
+        <h1 class="major2">Image Classification</h1>
+    
+        <form id="uploadForm" enctype="multipart/form-data" action="{{ url_for('upload_image') }}" method="post">
+            <input type="file" id="fileInput" name="file" accept="image/*">
+            <input type="submit" class="shadow-button" value="Generate & classify patches"> 
+        </form>
+        
+        <!-- Upload form -->
+        <div class="container">
+            <div class="big-image-container">
+                <div id="uploadedImage">
+                    {% if image_url %}
+                    <h2 class="major">Original Image</h2>
+                    <img src="{{ image_url }}" class="big-image" alt="Uploaded Image">
+                    {% else %}
+                    <div></div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="patches-container">
+                <h2 class="major">Patches ({{ patch_count }})</h2>
+                <div class="patches">
+                    {% if patch_filenames %}
+                        {% for patch_filename in patch_filenames %}
+                            <img src="{{ url_for('static', filename='uploads/' + patch_filename) }}" class="patch-image" alt="Patch Image">
+                        {% endfor %}
+                    {% else %}
+                    <div></div>
+                    {% endif %}
+                </div>
+                
+                {% if plot_filename %}
+                    <h2 class="major">Folder prediction</h2>
+                    <img src="{{ url_for('static', filename='plots/' + plot_filename) }}" class="plot-image" alt="Histogram Plot">
+                {% endif %}
+            </div>
+
+            <div class="reconstructed-image-container">
+                {% if reconstructed_image_url %}
+                    <h2 class="major">Reconstructed Image</h2>
+                    <img src="{{ reconstructed_image_url }}" class="reconstructed-image" alt="Reconstructed Image">
+                {% endif %}
+            </div>
+        </div>
+    </article>
+</body>
+</html>
